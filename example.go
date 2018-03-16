@@ -1,4 +1,4 @@
-package apiggo
+package main
 
 import (
 	"fmt"
