@@ -58,7 +58,6 @@ func Handler(handler http.Handler, host string, proxyRequest events.APIGatewayPr
 
 	r.URL = &rURL
 
-	// Start serving
 	handler.ServeHTTP(w, r)
 
 	// Add the response headers to a map that can be used in the APIGatewayProxyResponse
