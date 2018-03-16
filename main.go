@@ -1,6 +1,7 @@
 package apiggo
 
 import (
+	"encoding/base64"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -12,8 +13,19 @@ import (
 
 // Handler turns an APIGatewayProxyRequest into a standard http.Request
 func Handler(handler http.Handler, host string, proxyRequest events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+
+	//Check if the APIGatewayProxyRequest.Body is a base64 encoded string
+	// If it is, decode it
+	var body string
+	decodedBody, err := base64.StdEncoding.DecodeString(proxyRequest.Body)
+	if err != nil {
+		body = proxyRequest.Body
+	} else {
+		body = string(decodedBody)
+	}
+
 	// Create a new *http.Request and *httptest.ResponseRecorder
-	r := httptest.NewRequest(proxyRequest.HTTPMethod, proxyRequest.Path, strings.NewReader(proxyRequest.Body))
+	r := httptest.NewRequest(proxyRequest.HTTPMethod, proxyRequest.Path, strings.NewReader(body))
 	w := httptest.NewRecorder()
 
 	// Set the host to whatever your APIG base path is
