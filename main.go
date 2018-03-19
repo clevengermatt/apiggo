@@ -69,10 +69,18 @@ func Handler(handler http.Handler, host string, proxyRequest events.APIGatewayPr
 		respHeaders[key] = strings.Join(value, "")
 	}
 
+	isBase64Encoded := true
+
+	_, err = base64.StdEncoding.DecodeString(w.Body.String())
+	if err != nil {
+		isBase64Encoded = false
+	}
+
 	proxyResp := events.APIGatewayProxyResponse{
-		Body:       w.Body.String(),
-		Headers:    respHeaders,
-		StatusCode: w.Code,
+		Body:            w.Body.String(),
+		Headers:         respHeaders,
+		StatusCode:      w.Code,
+		IsBase64Encoded: isBase64Encoded,
 	}
 	return proxyResp, nil
 }
