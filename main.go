@@ -43,14 +43,20 @@ func Handler(handler http.Handler, host string, proxyRequest events.APIGatewayPr
 	}
 	queryString = strings.TrimSuffix(queryString, "&")
 
+	// Ensure all paths have a trailing slash for consistency
+	path := proxyRequest.Path
+	if !strings.HasSuffix(path, "/") {
+		path = path + "/"
+	}
+
 	// Create a new url.URL
 	rURL := url.URL{
 		Scheme:     "https",
 		Opaque:     "",
 		User:       nil,
 		Host:       host,
-		Path:       proxyRequest.Path,
-		RawPath:    proxyRequest.Path,
+		Path:       path,
+		RawPath:    path,
 		ForceQuery: false,
 		RawQuery:   queryString,
 		Fragment:   "",
